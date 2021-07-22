@@ -25,7 +25,7 @@ export function onJoin(this: Room) {
     },1000);
 
     setInterval(()=>{
-        this.send("use_Power1",{});
+        this.send("jump",{});
     },10000);
     
         
