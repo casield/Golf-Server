@@ -8,7 +8,7 @@ import PhysicsController from "./Physics/PhysicsController";
 
 export class QuixPhysicsRoom extends Room {
     State: GameState;
-    maxClients = 3;
+    maxClients = 100;
     phyController: PhysicsController;
     MapName = "CrocoLoco"
     onCreate(options: any) {
