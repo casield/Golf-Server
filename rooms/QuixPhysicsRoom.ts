@@ -3,53 +3,30 @@ import { c } from "../c";
 import { MapModel } from "../db/DataBaseSchemas";
 import { WIBox } from "../db/WorldInterfaces";
 import { BoxObject, GameState, GauntletMessage, ShotMessage, SphereObject, SwipeMessage, UserState } from "../schema/GameRoomState";
+import { CommandReader, ContextTypes } from "./Physics/Comands/CommandReader";
 import MessagesVars from "./Physics/MessagesVars";
 import PhysicsController from "./Physics/PhysicsController";
 
 export class QuixPhysicsRoom extends Room {
-    State: GameState;
+    State?: GameState;
     maxClients = 100;
-    phyController: PhysicsController;
-    MapName = "1000objs"
+    phyController?: PhysicsController;
+    MapName = "arena"
     onCreate(options: any) {
         this.clock.start();
         this.setState(new GameState());
         this.State = this.state;
         this.phyController = new PhysicsController(this);
 
-        this.onMessage("move", (client, message) => {
-            /* var player = this.users.get(client.sessionId);
-             player.move(message.x, message.y);*/
-            this.phyController.Send(MessagesVars.move, { client: client.sessionId, x: message.x, y: message.y })
-            //console.log("move",message);
-        })
-        this.onMessage("jump", (client, message) => {
-            /* var player = this.users.get(client.sessionId);
-             player.move(message.x, message.y);*/
-            this.phyController.Send(MessagesVars.Jump, { client: client.sessionId });
-            // console.log("move",message);
-        })
-        this.onMessage("shoot", (client, message) => {
-            this.phyController.Send(MessagesVars.Shoot, { client: client.sessionId, force: message.force })
-        })
-        this.onMessage("gauntlet", (client, message:GauntletMessage) => {
-            this.phyController.Send(MessagesVars.gauntlet, { client: client.sessionId,active:message.active });
-            // console.log("move",message);
-        })
-        this.onMessage("swipe", (client, message:SwipeMessage) => {
-            this.phyController.Send(MessagesVars.Swipe, { client: client.sessionId, degree:message.degree,direction:message.direction })
-        })
-        this.onMessage("createBoxes", (client, message:SwipeMessage) => {
-            this.phyController.Send(MessagesVars.createBoxes,{})
-        })
+        let cR = new CommandReader(this);
 
-
-        this.onMessage("rotatePlayer", (client, message) => {
-            this.phyController.Send(MessagesVars.rotatePlayer, { client: client.sessionId, x: message.x, y: message.y })
+        this.onMessage("*",(client,type,message)=>{
+        
+            cR.execute(type as string,{roomId:this.roomId,clientId:client.sessionId,...message},ContextTypes.room)
         })
     }
     onDispose() {
-        this.phyController.Send(MessagesVars.Close, "");
+        this.phyController?.Send(MessagesVars.Close, "");
         console.log("Closing QuixPhysics connection");
     }
     OnConnectedToServer() {
@@ -71,12 +48,12 @@ export class QuixPhysicsRoom extends Room {
         let us = new UserState();
         us.sessionId = client.sessionId;
         // this.clients.push(client);
-        this.State.users.set(client.sessionId, us);
+        this.State?.users.set(client.sessionId, us);
         this.createPlayer(us);
 
     }
     generateMap(mapName: string) {
-        this.phyController.Send("generateMap", mapName);
+        this.phyController?.Send("generateMap", {name:mapName});
     }
     createPlayer(user: UserState) {
         var box = new SphereObject();
@@ -93,7 +70,7 @@ export class QuixPhysicsRoom extends Room {
 
         // this.State.world.objects.set(box.uID,box);
 
-        this.phyController.Send(MessagesVars.create, box);
+        this.phyController?.Send(MessagesVars.create, box);
     }
 }
 

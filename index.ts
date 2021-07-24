@@ -7,13 +7,11 @@ import { Server, LobbyRoom, matchMaker, Room } from "colyseus";
 import { monitor } from "@colyseus/monitor";
 // import socialRoutes from "@colyseus/social/express"
 
-import { GameRoom } from "./rooms/GameRoom";
 import { GameState } from "./schema/GameRoomState";
 import { MapsRoom } from "./rooms/MapsRoom";
 import { DataBase } from "./db/DataBase";
 
 import { QuixRoom } from "./rooms/QuixRoom";
-import { WorldsManager } from "./world2/WorldsManager";
 import * as net from "net";
 import { QuixPhysicsRoom } from "./rooms/QuixPhysicsRoom";
 
@@ -23,10 +21,9 @@ export class QuixServer {
   app = express()
   version = process.env.npm_package_version;
   rooms: Map<string, Room> = new Map<string, Room>();
-  server: http.Server;
+  server?: http.Server;
   localhost: boolean = true;
-  mapsRoom: MapsRoom;
-  worldsManager: WorldsManager;
+  mapsRoom?: MapsRoom;
   matchmaker = matchMaker;
   constructor() {
    // this.createWorldManager();
@@ -75,11 +72,11 @@ export class QuixServer {
 
   }
   shutDownServer() {
-    this.worldsManager.shutDown();
+   // this.worldsManager?.shutDown();
   }
 
   createWorldManager() {
-    this.worldsManager = new WorldsManager(this);
+   // this.worldsManager = new WorldsManager(this);
   }
 
 }

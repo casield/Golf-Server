@@ -1,9 +1,9 @@
 import { V3, Quat, BoxObject, UserState, SphereObject, ObjectState } from "./schema/GameRoomState";
-import {Quaternion} from 'cannon';
+import { Quaternion } from 'cannon';
 import { WIBox, WIObject, WISphere } from "./db/WorldInterfaces";
 export class c {
 
-    static Quaternion = new Quaternion(0,0,0,1);
+    static Quaternion = new Quaternion(0, 0, 0, 1);
     static uniqueId() {
         // desired length of Id
         // always start with a letter -- base 36 makes for a nice shortcut
@@ -75,16 +75,17 @@ export class c {
         obj.material = valC.material;
         obj.mass = valC.mass;
         obj.mesh = valC.mesh;
-       /* if (valC.owner != undefined) {
-            obj.owner = new UserState();
-            obj.owner.sessionId = valC.owner.sessionId;
-        }*/
+        /* if (valC.owner != undefined) {
+             obj.owner = new UserState();
+             obj.owner.sessionId = valC.owner.sessionId;
+         }*/
 
 
         return obj;
     }
-    static serializeObjectState(st: WIObject): ObjectState {
-        var obj: ObjectState;
+    static serializeObjectState(st: WIObject): ObjectState | undefined {
+        var obj: ObjectState | undefined = undefined;
+
         if ("halfSize" in st) {
             obj = new BoxObject();
         }
@@ -92,61 +93,63 @@ export class c {
             obj = new SphereObject();
         }
         var valC: WIObject = st;
+        if (obj != undefined) {
+            obj.position = new V3();
+            obj.position.x = valC.position.x;
+            obj.position.y = valC.position.y;
+            obj.position.z = valC.position.z;
 
-        obj.position = new V3();
-        obj.position.x = valC.position.x;
-        obj.position.y = valC.position.y;
-        obj.position.z = valC.position.z;
-
-        obj.quaternion = new Quat();
-        obj.quaternion.x = valC.quat.x;
-        obj.quaternion.y = valC.quat.y;
-        obj.quaternion.z = valC.quat.z;
-        obj.quaternion.w = valC.quat.w;
+            obj.quaternion = new Quat();
+            obj.quaternion.x = valC.quat.x;
+            obj.quaternion.y = valC.quat.y;
+            obj.quaternion.z = valC.quat.z;
+            obj.quaternion.w = valC.quat.w;
 
 
 
-        obj.type = valC.type;
-        obj.uID = valC.uID;
-        obj.instantiate = valC.instantiate;
-        obj.material = valC.material;
-        obj.mass = valC.mass;
-        obj.mesh = valC.mesh;
-        if (valC.owner != undefined) {
-           // obj.owner = new UserState();
-            obj.owner = valC.owner.sessionId;
+            obj.type = valC.type;
+            obj.uID = valC.uID;
+            obj.instantiate = valC.instantiate;
+            obj.material = valC.material;
+            obj.mass = valC.mass;
+            obj.mesh = valC.mesh;
+            if (valC.owner != undefined) {
+                // obj.owner = new UserState();
+                obj.owner = valC.owner.sessionId;
+            }
+            if ("halfSize" in valC) {
+                (obj as BoxObject).halfSize = new V3();
+                (obj as BoxObject).halfSize.x = (valC as WIBox).halfSize.x;
+                (obj as BoxObject).halfSize.y = (valC as WIBox).halfSize.y;
+                (obj as BoxObject).halfSize.z = (valC as WIBox).halfSize.z;
+                return obj as BoxObject;
+            }
+            if ("radius" in valC) {
+                (obj as SphereObject).radius = (valC as WISphere).radius;
+                return obj as SphereObject;
+            }
         }
-        if ("halfSize" in valC) {
-            (obj as BoxObject).halfSize = new V3();
-            (obj as BoxObject).halfSize.x = (valC as WIBox).halfSize.x;
-            (obj as BoxObject).halfSize.y = (valC as WIBox).halfSize.y;
-            (obj as BoxObject).halfSize.z = (valC as WIBox).halfSize.z;
-            return obj as BoxObject;
-        }
-        if("radius" in valC){
-            (obj as SphereObject).radius = (valC as WISphere).radius;
-            return obj as SphereObject;
-        }
+
     }
 
     /* If true is returned it wont delete the function */
     public static triggerEvents(list: Array<() => any>) {
-        var saved: Array<() => any> =[];
+        var saved: Array<() => any> = [];
         list.forEach(val => {
             var v = val();
-            if(v === true){
+            if (v === true) {
                 saved.push(val);
             }
 
         })
         list.splice(0, list.length);
-        saved.forEach((val)=>{
+        saved.forEach((val) => {
             list.push(val);
         })
 
     }
-    public static toRadian(num:number):number{
-        return num * Math.PI/180;
+    public static toRadian(num: number): number {
+        return num * Math.PI / 180;
     }
 }
 
