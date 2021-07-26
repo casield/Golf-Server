@@ -9,17 +9,22 @@ enum OVarTypes {
 
 
 
-export default class OVar<T>{
-    private value?: T
-    public index?: number;
-    onChangeListeners?: (newVal: T) => void[];
-    constructor(public manager: OVarsManager) {
-        this.index = manager.addOVar(this);
-
+export default class OVar{
+    public value?: any
+    onChangeListeners: Function[] = new Array();
+    constructor(public name:string,public defaultValue:any,public manager: OVarsManager) {
+        manager.addOVarToPhy(this);
     }
-    set(val: T) {
-        this.manager.SendAction<T>(OVarActions.update,this,val)
+    update(val: any) {
+        this.manager.SendAction(OVarActions.update,this,val)
         //Send the change throw network
+    }
+    addChangeListener(listener:Function){
+        
+        this.onChangeListeners.push(listener);
+    }
+    onUpdate(newVal:any){
+        this.value = newVal;
     }
 
 

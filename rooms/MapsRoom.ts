@@ -10,24 +10,25 @@ export class MapsRoom extends Room {
     State?: MapRoomState;
 
     onCreate() {
-        if (this.map) {
-            this.setState(new MapRoomState);
-            this.State = this.state;
+        this.setState(new MapRoomState);
 
-            this.onMessage("name", async (client: Client, message: string) => {
-                MapModel.find({ name: message }, (err, res) => {
-                    //console.log(res);
-                    if (res.length >= 1) {
-                        this.map = res[0];
 
-                    } else {
-                        this.map = new MapModel({ name: message });
-                        // this.map.save();
-                    }
-                    console.log("Changing map:", this.map.name);
-                })
-            });
+        this.State = this.state;
 
+        this.onMessage("name", async (client: Client, message: string) => {
+            MapModel.find({ name: message }, (err, res) => {
+                //console.log(res);
+                if (res.length >= 1) {
+                    this.map = res[0];
+
+                } else {
+                    this.map = new MapModel({ name: message });
+                    // this.map.save();
+                }
+                console.log("Changing map:", this.map.name);
+            })
+        });
+      
             this.onMessage("objs", (client: Client, message: [ObjectState]) => {
                 if (this.map) {
                     console.log("Objects", message.length)
@@ -77,22 +78,22 @@ export class MapsRoom extends Room {
 
             this.onMessage("startPositions", (client: Client, message: { x: number, y: number, z: number }[]) => {
                 console.log("Positions", message.length)
-                if(this.map){
-                     this.map.startPositions = message;
+                if (this.map) {
+                    this.map.startPositions = message;
                 }
-               
-            })
-            this.onMessage("finish", () => {
-                if(this.map){
-                   this.map.save().then(() => {
-                    console.log("Map saved...")
-                    this.map = undefined;
-                }) 
-                }
-                
 
             })
-        }
+            this.onMessage("finish", () => {
+                if (this.map) {
+                    this.map.save().then(() => {
+                        console.log("Map saved...")
+                        this.map = undefined;
+                    })
+                }
+
+
+            })
+        
 
 
     }

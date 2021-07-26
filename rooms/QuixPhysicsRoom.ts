@@ -5,6 +5,8 @@ import { WIBox } from "../db/WorldInterfaces";
 import { BoxObject, GameState, GauntletMessage, ShotMessage, SphereObject, SwipeMessage, UserState } from "../schema/GameRoomState";
 import { CommandReader, ContextTypes } from "./Physics/Comands/CommandReader";
 import MessagesVars from "./Physics/MessagesVars";
+import OVar from "./Physics/OVars/OVar";
+import { OVarsManager } from "./Physics/OVars/OVarsManager";
 import PhysicsController from "./Physics/PhysicsController";
 
 export class QuixPhysicsRoom extends Room {
@@ -12,21 +14,24 @@ export class QuixPhysicsRoom extends Room {
     maxClients = 100;
     phyController?: PhysicsController;
     MapName = "arena"
+    cR?: CommandReader;
     onCreate(options: any) {
         this.clock.start();
         this.setState(new GameState());
         this.State = this.state;
         this.phyController = new PhysicsController(this);
 
-        let cR = new CommandReader(this);
+        this.cR = new CommandReader(this);
 
         this.onMessage("*",(client,type,message)=>{
-        
-            cR.execute(type as string,{roomId:this.roomId,clientId:client.sessionId,...message},ContextTypes.room)
+            if(this.cR){
+                 this.cR.execute(type as string,{roomId:this.roomId,clientId:client.sessionId,...message},ContextTypes.room)
+            }
+           
         })
     }
     onDispose() {
-        this.phyController?.Send(MessagesVars.Close, "");
+        this.phyController?.Send(MessagesVars.Close, {error:"null"});
         console.log("Closing QuixPhysics connection");
     }
     OnConnectedToServer() {
@@ -49,6 +54,11 @@ export class QuixPhysicsRoom extends Room {
         us.sessionId = client.sessionId;
         // this.clients.push(client);
         this.State?.users.set(client.sessionId, us);
+        let gem = new OVar("gems"+client.sessionId,0,this.phyController?.oVarsManager as OVarsManager)
+        gem.addChangeListener(()=>{
+           
+            us.gems = gem.value;
+        })
         this.createPlayer(us);
 
     }
@@ -57,8 +67,6 @@ export class QuixPhysicsRoom extends Room {
     }
     createPlayer(user: UserState) {
         var box = new SphereObject();
-        //box.uID = c.uniqueId();
-        // box.halfSize = c.createV3(10, 10, 10);
         box.radius = 10;
         box.instantiate = true;
         box.type = "Player2"

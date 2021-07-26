@@ -2,13 +2,17 @@ import { Room } from "colyseus";
 import { identity } from "lodash";
 import { QuixPhysicsRoom } from "../../QuixPhysicsRoom";
 import PhysicsController from "../PhysicsController";
-import { ICommand, CommandParams, MoveCommand, MoveCommandParams, Command } from "./Comands";
+import { ICommand, CommandParams, MoveCommandParams, Command } from "./Comands";
+import { CreateCommand } from "./CreateCommand";
+import { ObjectMessageCommand } from "./ObjectMessageCommand";
+import { OVarCommand } from "./OVarCommand";
+import { UpdateCommand } from "./UpdateCommand";
 
 export enum ContextTypes {
     "room", "phy"
 }
 export class CommandReader {
-    public commads: Map<string, Command<CommandParams>> = new Map();
+    public commads: Map<string, ICommand<any>> = new Map();
     constructor(public room: QuixPhysicsRoom) {
         this.addCommand(new Command("move",room));
         this.addCommand(new Command("jump",room));
@@ -17,9 +21,14 @@ export class CommandReader {
         this.addCommand(new Command("swipe",room));
         this.addCommand(new Command("createBoxes",room));
         this.addCommand(new Command("rotate",room));
+
+        this.addCommand(new OVarCommand(room));
+        this.addCommand(new CreateCommand(room));
+        this.addCommand(new UpdateCommand(room));
+        this.addCommand(new ObjectMessageCommand(room));
     }
 
-    public addCommand(command: Command<CommandParams>) {
+    public addCommand(command: ICommand<any>) {
         this.commads.set(command.name, command);
     }
 

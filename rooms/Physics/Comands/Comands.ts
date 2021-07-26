@@ -4,8 +4,9 @@ import Ajv, { JSONSchemaType } from "ajv";
 import { Room } from "colyseus";
 import { identity } from "lodash";
 import { QuixPhysicsRoom } from "../../QuixPhysicsRoom";
+import { OVarMessage } from "../OVars/OVarsManager";
 
-export interface ICommand<Type extends CommandParams> {
+export interface ICommand<Type> {
 
     room: QuixPhysicsRoom;
     name: string;
@@ -37,30 +38,4 @@ export class Command<T extends CommandParams> implements ICommand<T>{
 
 
 }
-const ajv = new Ajv()
-export class MoveCommand extends Command<MoveCommandParams>{
 
-    constructor(room: QuixPhysicsRoom) {
-        super("move",room);
-    }
-    onPhyMessage?(params: CommandParams): void {
-        throw new Error("Method not implemented.");
-    }
-    validate(params:any){
-       /* const schema: JSONSchemaType<MoveCommandParams> = {
-            type: "object",
-            properties: {},
-            required: ["clientId","roomId","x","y"],
-            additionalProperties: true
-          }
-          const validate2 = ajv.compile(schema);
-
-          console.log("Validate",validate2(params));*/
-    }
-
-    onRoomMessage(params: MoveCommandParams): void {
-        console.log("Sending", params)
-        this.validate(params);
-        this.room.phyController?.Send(this.name, params);
-    }
-}
