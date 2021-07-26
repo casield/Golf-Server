@@ -34,10 +34,6 @@ export class QuixPhysicsRoom extends Room {
         this.phyController?.Send(MessagesVars.Close, {error:"null"});
         console.log("Closing QuixPhysics connection");
     }
-    OnConnectedToServer() {
-        if (this.clients.length == 0)
-           this.generateMap(this.MapName);
-    }
     timeout(ms: number) {
         return new Promise(resolve => setTimeout(resolve, ms));
     }
@@ -59,26 +55,10 @@ export class QuixPhysicsRoom extends Room {
            
             us.gems = gem.value;
         })
-        this.createPlayer(us);
+
+        this.phyController?.Send(MessagesVars.join, {clientId:us.sessionId});
 
     }
-    generateMap(mapName: string) {
-        this.phyController?.Send("generateMap", {name:mapName});
-    }
-    createPlayer(user: UserState) {
-        var box = new SphereObject();
-        box.radius = 10;
-        box.instantiate = true;
-        box.type = "Player2"
-        box.mesh = "Players/Sol/sol_prefab";
-        box.quaternion = c.initializedQuat();
-        box.mass = 30;
-        box.position = c.createV3(2258, 1137, -545);
-        box.owner = user.sessionId;
-
-        // this.State.world.objects.set(box.uID,box);
-
-        this.phyController?.Send(MessagesVars.create, box);
-    }
+    
 }
 

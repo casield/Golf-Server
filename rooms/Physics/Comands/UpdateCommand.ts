@@ -12,7 +12,6 @@ export class UpdateCommand<T extends string> implements ICommand<T>{
     }
     onPhyMessage?(params: T): void {
         let message: string[] = JSON.parse(params);
-        //  console.log(message)
 
 
         for (let index = 0; index < message.length; index++) {
@@ -30,6 +29,10 @@ export class UpdateCommand<T extends string> implements ICommand<T>{
                         state.quaternion.y = element.quaternion.Y;
                         state.quaternion.z = element.quaternion.Z;
                         state.quaternion.w = element.quaternion.W;
+        
+                    
+                    }else{
+                        console.log("No state in Schema")
                     }
 
 
