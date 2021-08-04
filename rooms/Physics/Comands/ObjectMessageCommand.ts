@@ -9,7 +9,7 @@ export class ObjectMessageCommand<T extends string> implements ICommand<T>{
 
     }
     onRoomMessage?(params: T): void {
-       // this.room.phyController?.Send(this.name, params);
+        this.room.phyController?.Send(this.name, params);
     }
     onPhyMessage?(params: T): void {
 
