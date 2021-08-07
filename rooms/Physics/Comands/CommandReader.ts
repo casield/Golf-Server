@@ -4,6 +4,7 @@ import { QuixPhysicsRoom } from "../../QuixPhysicsRoom";
 import PhysicsController from "../PhysicsController";
 import { ICommand, CommandParams, MoveCommandParams, Command } from "./Comands";
 import { CreateCommand } from "./CreateCommand";
+import { DeleteCommand } from "./DeleteCommand";
 import { ObjectMessageCommand } from "./ObjectMessageCommand";
 import { OVarCommand } from "./OVarCommand";
 import { UpdateCommand } from "./UpdateCommand";
@@ -24,6 +25,7 @@ export class CommandReader {
 
         this.addCommand(new OVarCommand(room));
         this.addCommand(new CreateCommand(room));
+        this.addCommand(new DeleteCommand(room));
         this.addCommand(new UpdateCommand(room));
         this.addCommand(new ObjectMessageCommand(room));
     }
