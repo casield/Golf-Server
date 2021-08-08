@@ -41,7 +41,7 @@ export class QuixPhysicsRoom extends Room {
         console.log("Disconnected from physerver")
         this.clients.forEach(client => {
             console.log("Disconected a user")
-            //client.leave(1,"Server has been closed");
+            client.leave(1,"Server has been closed");
         });
 
     }
