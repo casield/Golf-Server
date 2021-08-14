@@ -29,9 +29,13 @@ export class UpdateCommand<T extends string> implements ICommand<T>{
                         state.quaternion.y = element.quaternion.Y;
                         state.quaternion.z = element.quaternion.Z;
                         state.quaternion.w = element.quaternion.W;
-        
-                    
-                    }else{
+                        if (element.isMesh) {
+                            state.isMesh = element.isMesh;
+                        }
+
+
+
+                    } else {
                         console.log("No state in Schema")
                     }
 

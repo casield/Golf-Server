@@ -28,6 +28,7 @@ export interface IObject extends Document{
     mesh:string,
     isMesh:boolean,
     owner:any,
+    
 }
 
 export interface IBox extends IObject{

@@ -27,6 +27,7 @@ export class CreateCommand<T extends string> implements ICommand<T>{
                 mass: message.mass,
                 mesh: message.mesh,
                 uID: message.uID,
+                isMesh:message.isMesh
 
             });
         }
