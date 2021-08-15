@@ -53,6 +53,10 @@ export class UserState extends Schema {
     @type(Gauntlet) gauntlet:Gauntlet = new Gauntlet();
 
 }
+export class PhyBoundBox extends Schema{
+    @type(V3) center = new V3();
+    @type(V3) extents = new V3();
+}
 
 export class ObjectState extends Schema {
     @type(V3) position = new V3();
@@ -65,6 +69,7 @@ export class ObjectState extends Schema {
     @type("number") mass?: number = 0;
     @type("string") mesh?:string;
     @type("boolean") isMesh?:boolean;
+    @type(PhyBoundBox) boundBox?:PhyBoundBox = undefined;
 
 }
 

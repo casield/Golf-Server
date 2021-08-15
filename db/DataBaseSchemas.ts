@@ -13,6 +13,7 @@ import { V3 } from '../schema/GameRoomState';
 
     halfSize:{type:{x:Number,y:Number,z:Number}},
     radius:{type:Number},
+    boundBox:{type:Object}
 })
 
 
@@ -28,11 +29,16 @@ export interface IObject extends Document{
     mesh:string,
     isMesh:boolean,
     owner:any,
+    boundBox?:IBoundBox
     
 }
 
 export interface IBox extends IObject{
     halfSize:{x:number,y:number,z:number}
+}
+export interface IBoundBox{
+    center:{x:number,y:number,z:number}
+    extents:{x:number,y:number,z:number}
 }
 
 export interface ISphere extends IObject{
@@ -48,7 +54,6 @@ const MapSchema: Schema = new Schema({
      name:{type:String,required:true},
      startPositions:{type:[{x:Number,y:Number,z:Number}]}
 });
-
 export interface IMap extends Document {
     name:String;
     objects:IObject[];

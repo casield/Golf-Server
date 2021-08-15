@@ -28,72 +28,79 @@ export class MapsRoom extends Room {
                 console.log("Changing map:", this.map.name);
             })
         });
-      
-            this.onMessage("objs", (client: Client, message: [ObjectState]) => {
-                if (this.map) {
-                    console.log("Objects", message.length)
-                    this.map.objects = <IObject[]>[];
-                    message.forEach(element => {
+
+        this.onMessage("objs", (client: Client, message: [ObjectState]) => {
+            if (this.map) {
+                console.log("Objects", message.length)
+                this.map.objects = <IObject[]>[];
+                message.forEach(element => {
 
 
-                        var model;
+                    var model;
+                    if ("halfSize" in element) {
+                        model = new BoxModel()
+                    }
+                    if ("radius" in element) {
+                        model = new SphereModel()
+                    }
+                    if (model) {
+                        model.uID = element.uID as string;
+                        model.instantiate = element.instantiate as boolean;
+
+                        model.position = { x: element.position.x, y: element.position.y, z: element.position.z }
+                        model.quat = { x: element.quaternion.x, y: element.quaternion.y, z: element.quaternion.z, w: element.quaternion.w }
+                        model.mass = element.mass as number;
+
+
+                        if (element.mesh != "") {
+                            model.mesh = element.mesh as string;
+                            model.isMesh = element.isMesh as boolean;
+                        }
                         if ("halfSize" in element) {
-                            model = new BoxModel()
+                            (<IBox>model).halfSize = (<BoxObject>element).halfSize;
                         }
                         if ("radius" in element) {
-                            model = new SphereModel()
+                            (<ISphere>model).radius = (<SphereObject>element).radius as number;
                         }
-                        if (model) {
-                            model.uID = element.uID as string;
-                            model.instantiate = element.instantiate as boolean;
+                        if (element.boundBox) {
+                            console.log("bound box", element);
 
-                            model.position = { x: element.position.x, y: element.position.y, z: element.position.z }
-                            model.quat = { x: element.quaternion.x, y: element.quaternion.y, z: element.quaternion.z, w: element.quaternion.w }
-                            model.mass = element.mass as number;
+                            model.boundBox = { center: element.boundBox?.center, extents: element.boundBox?.extents }
 
 
-                            if (element.mesh != "") {
-                                model.mesh = element.mesh as string;
-                                model.isMesh = element.isMesh as boolean;
-                            }
-                            if ("halfSize" in element) {
-                                (<IBox>model).halfSize = (<BoxObject>element).halfSize;
-                            }
-                            if ("radius" in element) {
-                                (<ISphere>model).radius = (<SphereObject>element).radius as number;
-                            }
-
-                            model.type = element.type;
-
-                            this.map?.objects.push(model);
                         }
 
+                        model.type = element.type;
+
+                        this.map?.objects.push(model);
+                    }
 
 
-                    })
-                }
+
+                })
+            }
 
 
-            });
+        });
 
-            this.onMessage("startPositions", (client: Client, message: { x: number, y: number, z: number }[]) => {
-                console.log("Positions", message.length)
-                if (this.map) {
-                    this.map.startPositions = message;
-                }
+        this.onMessage("startPositions", (client: Client, message: { x: number, y: number, z: number }[]) => {
+            console.log("Positions", message.length)
+            if (this.map) {
+                this.map.startPositions = message;
+            }
 
-            })
-            this.onMessage("finish", () => {
-                if (this.map) {
-                    this.map.save().then(() => {
-                        console.log("Map saved...")
-                        this.map = undefined;
-                    })
-                }
+        })
+        this.onMessage("finish", () => {
+            if (this.map) {
+                this.map.save().then(() => {
+                    console.log("Map saved...")
+                    this.map = undefined;
+                })
+            }
 
 
-            })
-        
+        })
+
 
 
     }
