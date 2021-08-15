@@ -14,7 +14,9 @@ export enum ContextTypes {
 }
 export class CommandReader {
     public commads: Map<string, ICommand<any>> = new Map();
+    
     constructor(public room: QuixPhysicsRoom) {
+        //Commands from client
         this.addCommand(new Command("move",room));
         this.addCommand(new Command("jump",room));
         this.addCommand(new Command("shoot",room));
@@ -22,6 +24,9 @@ export class CommandReader {
         this.addCommand(new Command("swipe",room));
         this.addCommand(new Command("createBoxes",room));
         this.addCommand(new Command("rotate",room));
+        this.addCommand(new Command("changeGauntlet",room));
+
+        //QuixPhysics commands
 
         this.addCommand(new OVarCommand(room));
         this.addCommand(new CreateCommand(room));

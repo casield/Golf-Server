@@ -39,16 +39,21 @@ export class ArenaItemState extends Schema {
     }
 
 }
+export class Gauntlet extends Schema {
+    @type("string") userId?: string;
+    @type("string") type = undefined;
+
+}
 export class UserState extends Schema {
     @type("string") sessionId?: string;
     @type("string") name?: string;
     @type("number") gems: number = 0;
     @type("number") energy: number = 0;
     @type("number") wins: number = 0;
-    @type({map: ArenaItemState }) shop = new MapSchema<ArenaItemState>();
-    @type({map: ArenaItemState }) board = new MapSchema<ArenaItemState>();
+    @type(Gauntlet) gauntlet:Gauntlet = new Gauntlet();
 
 }
+
 export class ObjectState extends Schema {
     @type(V3) position = new V3();
     @type(Quat) quaternion = new Quat();
@@ -122,4 +127,7 @@ export class SwipeMessage extends Schema{
 }
 export class GauntletMessage extends Schema{
     @type("boolean") active?:boolean;
+}
+export class ChangeGauntletMessage extends Schema{
+    @type("string") type?:undefined;
 }
