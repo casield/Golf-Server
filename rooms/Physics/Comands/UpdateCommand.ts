@@ -1,3 +1,4 @@
+import { BoxObject } from "../../../schema/GameRoomState";
 import { QuixPhysicsRoom } from "../../QuixPhysicsRoom";
 import { CommandParams, ICommand } from "./Comands";
 
@@ -31,6 +32,11 @@ export class UpdateCommand<T extends string> implements ICommand<T>{
                         state.quaternion.w = element.quaternion.W;
                         if (element.isMesh) {
                             state.isMesh = element.isMesh;
+                        }
+                        if(state instanceof BoxObject){
+                            state.halfSize.x = element.halfSize.X;
+                            state.halfSize.y = element.halfSize.Y;
+                            state.halfSize.z = element.halfSize.Z;
                         }
 
 
