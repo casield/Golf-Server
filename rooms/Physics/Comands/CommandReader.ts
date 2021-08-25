@@ -3,6 +3,7 @@ import { identity } from "lodash";
 import { QuixPhysicsRoom } from "../../QuixPhysicsRoom";
 import PhysicsController from "../PhysicsController";
 import { ICommand, CommandParams, MoveCommandParams, Command } from "./Comands";
+import { CreateBotCommand } from "./CreateBotCommand";
 import { CreateCommand } from "./CreateCommand";
 import { DeleteCommand } from "./DeleteCommand";
 import { ObjectMessageCommand } from "./ObjectMessageCommand";
@@ -33,6 +34,7 @@ export class CommandReader {
         this.addCommand(new DeleteCommand(room));
         this.addCommand(new UpdateCommand(room));
         this.addCommand(new ObjectMessageCommand(room));
+        this.addCommand(new CreateBotCommand(room));
     }
 
     public addCommand(command: ICommand<any>) {

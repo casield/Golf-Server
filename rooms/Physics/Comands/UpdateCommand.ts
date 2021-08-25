@@ -38,6 +38,9 @@ export class UpdateCommand<T extends string> implements ICommand<T>{
                             state.halfSize.y = element.halfSize.Y;
                             state.halfSize.z = element.halfSize.Z;
                         }
+                        if(state.owner != element.owner){
+                            state.owner = element.owner;
+                        }
 
 
 

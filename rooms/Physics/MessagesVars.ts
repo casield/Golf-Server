@@ -9,6 +9,7 @@ export default class MessaggesVars{
     static Shoot = "shoot";
     static Swipe = "swipe"
     static gauntlet = "gauntlet";
-    static join = "join"
+    static join = "join";
+    static createBot = "createbot";
  
  }
