@@ -16,7 +16,7 @@ import * as net from "net";
 import { QuixPhysicsRoom } from "./rooms/QuixPhysicsRoom";
 
 export class QuixServer {
-  database = new DataBase();
+ // database = new DataBase();
   port = Number(process.env.PORT || 6017);
   app = express()
   version = process.env.npm_package_version;
