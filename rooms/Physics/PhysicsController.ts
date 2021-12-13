@@ -22,9 +22,7 @@ export default class PhysicsController {
     connectToPhysics() {
 
 
-        this.client = net.connect(1337, '127.0.0.1', () => {
-
-            // console.log(this);
+        this.client = net.connect(1337, 'localhost', () => {
             // this.Send("hello", "Hola wn");
 
         });
